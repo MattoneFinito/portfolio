@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Andrea Face | Game Designer Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* --- RESET & BASE STYLES --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            cursor: none;
+        }
+
+        body {
+            background-color: #000a30; 
+            color: #ffffff; 
+            font-family: 'Space Grotesk', sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+
+        /* --- BACKGROUND JUICINESS (PARTICELLE) --- */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* --- CURSORE PERSONALIZZATO --- */
+        #custom-cursor {
+            width: 20px;
+            height: 20px;
+            background: #0055ff;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            box-shadow: 0 0 20px #00aaff, 0 0 40px #0055ff;
+            transition: transform 0.1s ease-out;
+            transform: translate(-50%, -50%);
+        }
+
+        /* ONDA URTO AL CLICK */
+        .click-burst {
+            position: fixed;
+            border: 4px solid #00aaff;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            animation: burstEffect 0.4s ease-out forwards;
+        }
+
+        @keyframes burstEffect {
+            0% { width: 0; height: 0; opacity: 1; }
+            100% { width: 80px; height: 80px; opacity: 0; border-width: 1px; }
+        }
+
+        /* --- ICONA CV ANIMATA --- */
+        .cv-container {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .cv-icon {
+            display: block;
+            width: 45px;
+            height: 60px;
+            background: #ffffff;
+            border-radius: 2px;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .cv-icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            background: #000a30; 
+            border-bottom-left-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .cv-icon:hover {
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        .cv-icon:hover::before {
+            width: 18px;
+            height: 18px;
+            background: #dddddd;
+            box-shadow: -2px 2px 5px rgba(0,0,0,0.3);
+            border-left: 1px solid #999;
+            border-bottom: 1px solid #999;
+        }
+
+        /* --- STRUTTURA --- */
+        .wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        section {
+            padding: 120px 0;
+            position: relative;
+        }
+
+        /* --- HERO SECTION --- */
+        #hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 8rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            line-height: 0.85;
+            color: #ffffff;
+            letter-spacing: -2px;
+            margin-bottom: 20px;
+            text-shadow: 0 10px 30px rgba(0, 85, 255, 0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 2.5rem;
+            font-weight: 500;
+            color: #00aaff; 
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        /* --- TITOLI SEZIONI --- */
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 4rem;
+            text-transform: uppercase;
+            margin-bottom: 60px;
+            color: #ffffff;
+            border-left: 8px solid #0055ff;
+            padding-left: 20px;
+        }
+
+        /* --- ABOUT ME --- */
+        #about {
+            margin-top: 60px; 
+        }
+
+        .about-text {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            max-width: 900px;
+            color: #e0e0e0;
+        }
+
+        .about-text p {
+            margin-bottom: 30px;
+        }
+
+        .about-text a {
+            color: #00aaff;
+            text-decoration: none;
+            font-weight: 700;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .about-text a:hover {
+            border-bottom-color: #00aaff;
+            text-shadow: 0 0 10px #00aaff;
+        }
+
+        /* --- PROJECTS GRID --- */
+        .projects-wrapper {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .project-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 25px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .project-box:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: #0055ff;
+            background: rgba(0, 85, 255, 0.08);
+            box-shadow: 0 20px 40px rgba(0, 85, 255, 0.3);
+        }
+
+        .project-preview-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .project-box h3 {
+            font-size: 1.6rem;
+            margin-bottom: 10px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .project-role {
+            font-size: 0.95rem;
+            color: #00aaff;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .project-box p {
+            font-size: 1rem;
+            color: #cccccc;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .open-window-btn {
+            background: #0055ff;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 85, 255, 0.3);
+        }
+
+        .open-window-btn:hover {
+            background: #00aaff;
+            box-shadow: 0 4px 20px #00aaff;
+            transform: translateY(-2px);
+        }
+
+        /* --- FINÈSTRE POPUP --- */
+        .popup-window {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 5, 25, 0.96);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .popup-window.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .popup-content {
+            background: #000f44;
+            border: 3px solid #0055ff;
+            width: 90%;
+            max-width: 950px;
+            max-height: 85vh;
+            border-radius: 20px;
+            padding: 45px;
+            position: relative;
+            overflow-y: auto;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .popup-window.active .popup-content {
+            transform: scale(1);
+        }
+
+        .popup-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        .popup-content::-webkit-scrollbar-thumb {
+            background: #0055ff;
+            border-radius: 10px;
+        }
+
+        .exit-btn {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background: #ff3366;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            box-shadow: 0 5px 15px rgba(255, 51, 102, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .exit-btn:hover {
+            transform: scale(1.1);
+            background: #ff5588;
+        }
+
+        .popup-body {
+            margin-top: 30px;
+            font-size: 1.15rem;
+            line-height: 1.75;
+            white-space: pre-wrap;
+        }
+
+        .popup-body strong {
+            color: #FF8C00 !important;
+            font-size: 1.3rem;
+            display: inline-block;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .popup-body strong:first-child {
+            margin-top: 0;
+        }
+        .popup-body ul {
+            margin-left: 25px;
+            margin-top: 10px;
+            margin-bottom: 25px;
+            list-style-type: square;
+        }
+        .popup-body li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        /* --- DOCUMENTATION CAROUSEL --- */
+        .carousel-section-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .carousel-track-container {
+            width: 100%;
+            overflow: hidden;
+            padding: 20px 0;
+        }
+
+        .carousel-track {
+            display: flex;
+            gap: 30px;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            width: 100%;
+        }
+
+        .doc-card {
+            min-width: calc((100% - 60px) / 3);
+            background: rgba(255, 255, 255, 0.01);
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .doc-card:hover {
+            border-color: #00aaff;
+            background: rgba(0, 170, 255, 0.03);
+            transform: translateY(-5px);
+        }
+
+        .doc-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .doc-card h4 {
+            font-size: 1.15rem;
+            margin-bottom: 15px;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .doc-link-btn {
+            display: inline-block;
+            background: transparent;
+            color: #00aaff;
+            border: 2px solid #00aaff;
+            padding: 10px 22px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .doc-link-btn:hover {
+            background: #00aaff;
+            color: #000a30;
+            box-shadow: 0 0 15px rgba(0, 170, 255, 0.5);
+        }
+
+        .carousel-arrow {
+            background: #0055ff;
+            color: white;
+            border: none;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            position: absolute;
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+        }
+
+        .carousel-arrow:hover {
+            background: #00aaff;
+            transform: scale(1.15);
+            box-shadow: 0 0 20px #00aaff;
+        }
+
+        .arrow-left { left: -75px; }
+        .arrow-right { right: -75px; }
+
+        /* --- CONTACTS --- */
+        .contacts-box {
+            background: rgba(255, 255, 255, 0.01);
+            border: 2px dashed rgba(0, 85, 255, 0.3);
+            border-radius: 20px;
+            padding: 60px;
+            text-align: center;
+            max-width: 750px;
+            margin: 0 auto;
+            backdrop-filter: blur(5px);
+        }
+
+        .punchline {
+            font-size: 2.2rem;
+            font-family: 'Montserrat', sans-serif;
+            color: #00aaff;
+            margin-bottom: 40px;
+        }
+
+        .contacts-list {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .contact-item {
+            font-size: 1.6rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #ffffff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            padding-bottom: 5px;
+            border-bottom: 2px solid transparent;
+        }
+
+        a.contact-item:hover {
+            color: #00aaff;
+            border-bottom-color: #00aaff;
+            text-shadow: 0 0 15px rgba(0, 170, 255, 0.6);
+        }
+
+        .contact-item i {
+            color: #0055ff;
+        }
+
+        @media (max-width: 1350px) {
+            .arrow-left { left: -20px; }
+            .arrow-right { right: -20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="bg-canvas"></canvas>
+
+    <div id="custom-cursor"></div>
+
+    <div class="cv-container">
+        <a href="https://drive.google.com/file/d/1oAqyrgmNfv-KD0581kEcUEaBeWkL4eiQ/view?usp=sharing" target="_blank" class="cv-icon" title="Visualizza CV"></a>
+    </div>
+
+    <div class="wrapper">
+
+        <section id="hero">
+            <h1 class="hero-title">Andrea Face</h1>
+            <p class="hero-subtitle">Game Designer</p>
+        </section>
+
+        <section id="about">
+            <h2 class="section-title">About</h2>
+            <div class="about-text">
+                <p>I’m a 21-year-old Game Designer, graduated at <a href="http://www.aiv01.it" target="_blank">AIV</a>. I chose to become a Game Designer because gaming has been a huge part of my life growing up, since my first memories of playing videogames with my parents, and I wanted to make other people feel the same emotions I felt playing my favorite videogames.</p>
+                <p>I also have a love for puzzles, whether they are in videogames or analogic, I like to solve all kinds of variations of Rubik’s Cube and other types of puzzles. This is a passion that taught me analytical thinking, figuring out creative solutions to all kind of problems and, most importantly, always maintaining calm and never give up to frustration when things aren’t going as planned.</p>
+            </div>
+        </section>
+
+        <section id="projects-section">
+            <h2 class="section-title">Projects</h2>
+            <div class="projects-wrapper">
+                
+                <div class="project-box">
+                    <div>
+                        <img src="https://drive.google.com/thumbnail?id=10O1mCY7DQ2_kzc3HrWSWHG_HfVgF997e&sz=w800" alt="The Tomb of Pantol" class="project-preview-img">
+                        <h3>The Tomb of Pantol</h3>
+                        <div class="project-role">Game Designer</div>
+                        <p>A word-guessing board game where a group of players must face the ghost of an ancient king, Pantol.</p>
+                    </div>
+                    <button class="open-window-btn" onclick="openWindow('popup-pantol')">Approfondisci</button>
+                </div>
+
+                <div class="project-box">
+                    <div>
+                        <img src="https://drive.google.com/thumbnail?id=1bb0cOtDGLS0TLb_bf5NrIx5wDqN-UgM3&sz=w800" alt="Grappling Hook Adventure" class="project-preview-img">
+                        <h3>Grappling Hook Adventure</h3>
+                        <div class="project-role">Game Designer</div>
+                        <p>An open world challenge platformer focused purely on gameplay and an innovative jump-less mechanic.</p>
+                    </div>
+                    <button class="open-window-btn" onclick="openWindow('popup-grappling')">Approfondisci</button>
+                </div>
+
+                <div class="project-box">
+                    <div>
+                        <img src="https://drive.google.com/thumbnail?id=1KMGLfI5jKJIbY2gWOVHQZoVUMGjWhxUb&sz=w800" alt="Vice & Dice" class="project-preview-img">
+                        <h3>Vice & Dice</h3>
+                        <div class="project-role">Game Designer</div>
+                        <p>A roguelite game based on dice rolling, where you must escape a casino by beating cheating croupiers.</p>
+                    </div>
+                    <button class="open-window-btn" onclick="openWindow('popup-vicedice')">Approfondisci</button>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="documentation-section">
+            <h2 class="section-title">Documentation</h2>
+            <div class="carousel-section-container">
+                <button class="carousel-arrow arrow-left" onclick="moveCarousel(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                <div class="carousel-track-container">
+                    <div class="carousel-track" id="track">
+                        <div class="doc-card">
+                            <img src="https://i.redd.it/fehf3n4t58091.png" alt="Geometry Dash">
+                            <h4>GDD - Weekly Gauntlet in Geometry Dash</h4>
+                            <a href="https://docs.google.com/document/d/1mt3ralvlFw2BiOPpteaxV6t1pXCoTsjl2-UGrAxOjtg/edit?usp=sharing" target="_blank" class="doc-link-btn">Apri Documento</a>
+                        </div>
+                        <div class="doc-card">
+                            <img src="https://static.wikia.nocookie.net/minecraft_it_gamepedia/images/8/86/Creeper_Face_%28minecraft.net%29.png/revision/latest?cb=20220217161709" alt="Minecraft">
+                            <h4>Minecraft’s Creeper Analysis and Tuning</h4>
+                            <a href="https://drive.google.com/drive/folders/1GIpMD_WDk5RXpirMFNoRH9cvgXELqFbx?usp=sharing" target="_blank" class="doc-link-btn">Apri Cartella</a>
+                        </div>
+                        <div class="doc-card">
+                            <img src="https://images.uesp.net/9/9e/SR-quest-Quest_all_Drunks_Have.jpg" alt="Skyrim">
+                            <h4>GDD - Drunkenness in Skyrim</h4>
+                            <a href="https://docs.google.com/document/d/1FBHutGuJmqSDNGmxhwC4VnuzwAqClm_lF0Iw9rg4Awc/edit?usp=sharing" target="_blank" class="doc-link-btn">Apri Documento</a>
+                        </div>
+                        <div class="doc-card">
+                            <img src="https://9meters.com/wp-content/uploads/balatro-physical-playing-cards.jpg" alt="Balatro">
+                            <h4>Chances Analysis - Balatro</h4>
+                            <a href="https://docs.google.com/document/d/1QjGvY7IKgrvDsCcDVzKBrcbKjlGK5R9CUWbN4Amskd8/edit?usp=sharing" target="_blank" class="doc-link-btn">Apri Documento</a>
+                        </div>
+                        <div class="doc-card">
+                            <img src="https://p.turbosquid.com/ts-thumb/8i/wQHff5/FHbbR9bl/turbosquid/png/1452615628/1920x1080/fit_q87/8460905c5cf97fa97af61f816e0adbf6de8a2eab/turbosquid.jpg" alt="Portal">
+                            <h4>GDD - Affection in Portal</h4>
+                            <a href="https://docs.google.com/document/d/1DgixB871ln4sFOj3g2Q9EoxRNzfIBLwi2bppR3OXDAg/edit?usp=sharing" target="_blank" class="doc-link-btn">Apri Documento</a>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-arrow arrow-right" onclick="moveCarousel(1)"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+        </section>
+
+        <section id="contacts-section">
+            <h2 class="section-title">Contatti</h2>
+            <div class="contacts-box">
+                <div class="punchline">Get in contact with me!</div>
+                <div class="contacts-list">
+                    <a href="mailto:andrea.face@gmail.com" class="contact-item">
+                        <i class="fa-solid fa-envelope"></i> andrea.face@gmail.com
+                    </a>
+                    <div class="contact-item">
+                        <i class="fa-solid fa-phone"></i> 331 9552204
+                    </div>
+                    <a href="https://x.com/AndreaFaceGD" target="_blank" class="contact-item">
+                        <i class="fa-brands fa-x-twitter"></i> @AndreaFaceGD
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <div class="popup-window" id="popup-pantol">
+        <div class="popup-content">
+            <button class="exit-btn" onclick="closeWindow('popup-pantol')">Exit</button>
+            <div class="popup-body"><strong>First Year Project — Game Design @ AIV</strong>
+
+This is the first project I developed as a student in AIV, during a period that went from December 2024 to August 2025. Our project was the only one of that year that passed the initial selection, giving us the chance to continue working on it successfully.
+
+This experience was the first one I had on a long project, and it taught me how to interact with other team members, to create a safe and comfortable environment where everyone is free to submit their ideas and explain some criticism they think the project might have. Other than that, I also learned the importance of doing Post-Mortem meetings, where we could discuss the past month’s work and understand how the rest of the team felt and what we could do to bring the game to its best possible status.
+
+<strong>Game Overview</strong>
+The Tomb of Pantol is a word-guessing board game, where a group of player must face the ghost of an ancient king, Pantol, while exploring his tomb searching for his precious crown.
+
+Pantol, impersonated by a player, will test the group to guess words decided by them on the spot, while they'll be subjected to other mental and physical challenges that will make the guessing much harder... and comic!
+
+The core design for this game is that we wanted a word-guessing party game where there could be an almost infinite number of possible words to guess, because they were decided on the spot by Pantol.
+
+However, this design came with the problem of balancing Pantol: if they had complete freedom, they would have been too strong, so a huge part of our work was to give Pantol the right limitations while still maintaining the fantasy of it being an ancient, powerful ruler that wants to kick the Explorers out of the Tomb.
+
+<strong>My Role & Responsibilities</strong>
+In this project, my work consisted of:
+<ul>
+<li><strong>Game Design & Systems</strong>
+Designing the core mechanics of the game;
+Balancing the role of Pantol, maintaining their gameplay relevance, but not making it overwhelming for the Explorers;
+Designing the board, iterating on the design to create a board with no clear best path;
+Designing the effect of the cards, making all of the challenges feel unique, engaging and comic.</li>
+<li><strong>Research & Market Analysis</strong>
+Analysis of over 200 games across multiple platforms to understand market trends, economic patterns, and engagement patterns
+Competitor study and documentation to support design choices
+Analysis of the potential cost for producing our game, creating a sheet with estimates based on the numbers found on different board game producers' websites.</li>
+<li><strong>Testing</strong>
+Assisting in person at testing sessions to identify the goods and the flaws of the game;
+Compiling Design Log after each testing session to have an overview of the results of the playtest.</li>
+</ul></div>
+        </div>
+    </div>
+
+    <div class="popup-window" id="popup-grappling">
+        <div class="popup-content">
+            <button class="exit-btn" onclick="closeWindow('popup-grappling')">Exit</button>
+            <div class="popup-body"><strong>Grappling Hook Adventure</strong> is a school group project developed over 5 weeks, where the mandate was to create an open world with one single mechanic, and where the character was not able to jump.
+
+<strong>Concept</strong>
+The game is set in an adventure park, where the character is a dummy that has to test all the new attractions with the Grappling Hook.
+
+This was a project purely focused on gameplay, where we wanted to create a platforming challenge that didn’t involve jumping in the traditional way. We also wanted to make every area feel different from each other, and we designed them to make them playable in any order the player wanted.
+
+The game consists of four different main areas, one final challenge unlocked after completing the four main ones, and three optional challenges that unlock a secret inside the map.
+
+This project allowed me to understand the importance of the scope of a project, designing the game based on the resources that we have and managing my tasks in a short timespan.
+
+<strong>My Role & Responsibilities</strong>
+In this project, my work consisted of: 
+<ul>
+<li><strong>Game Design</strong>
+Wrote the High Vision document for the project, deciding the key elements of the gameplay;
+Designed and tuned the Grappling Hook mechanic.</li>
+<li><strong>Level Design</strong>
+Compiled the first overview for the LDD of the project, describing how the level was supposed to be structured, based on the shape of the “Mirabilandia” amusement park in Ravenna;
+Designed the layout for the three optional challenges.</li>
+<li><strong>Game programming</strong>
+Programmed from scratch the Grappling Hook mechanic, making it easy to test and, consequently, to be tuned to achieve the perfect feeling that we wanted.</li>
+</ul></div>
+        </div>
+    </div>
+
+    <div class="popup-window" id="popup-vicedice">
+        <div class="popup-content">
+            <button class="exit-btn" onclick="closeWindow('popup-vicedice')">Exit</button>
+            <div class="popup-body"><strong>Vice & Dice</strong>
+
+This was my first experience working on a full video game, working not just with other game designers but with a full team with programmers, artists and animators.
+
+Working at Vice & Dice was an extremely formative experience, as it taught me how to manage working with a larger group of people, how to work using a Scrum method and how to communicate with coworkers in different fields
+
+<strong>Game Concept</strong>
+Vice & Dice is a roguelite game based on dice rolling, where the player must escape a casino where he's been imprisoned by signing a contract with the evil John Gambling.
+
+To do that, they will have to defeat all of John Gambling's croupiers, rolling their dice to match the enemy's symbols. Defeating croupiers will help them grow stronger by buying power-ups that will come in handy in difficult situations. 
+
+But watch out: the croupiers will often find ways to cheat the result. After all, the house always wins!
+
+<strong>My Role & Responsibilities</strong>
+In this project, my work consisted of: 
+<ul>
+<li><strong>Game Design</strong>
+Designed the main mechanics and core loop of the game;
+Designed the functionality of the map, tuning it to make it balanced and a fair challenge for the player;
+Designed the tutorial of the game, giving a correct introduction to the mechanics of the game;
+Worked alongside a narrative designer to write dialogues for the tutorial, to introduce the player to the worldbuilding and the characters of the game;
+Designed the power-ups, making them engaging with useful, balanced and unique effect, making a player want to try them and their eventual combos.</li>
+</ul></div>
+        </div>
+    </div>
+
+    <script>
+        // Cursore e Shockwave Burst Effect al click
+        const cursor = document.getElementById('custom-cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        document.addEventListener('click', (e) => {
+            const burst = document.createElement('div');
+            burst.classList.add('click-burst');
+            burst.style.left = e.clientX + 'px';
+            burst.style.top = e.clientY + 'px';
+            document.body.appendChild(burst);
+            setTimeout(() => burst.remove(), 400);
+        });
+
+        const interactiveElements = document.querySelectorAll('a, button, .project-box, .doc-card');
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.style.transform = 'translate(-50%, -50%) scale(2.2)');
+            el.addEventListener('mouseleave', () => cursor.style.transform = 'translate(-50%, -50%) scale(1)');
+        });
+
+        function openWindow(id) { document.getElementById(id).classList.add('active'); }
+        function closeWindow(id) { document.getElementById(id).classList.remove('active'); }
+
+        // Carousel Logic
+        let currentSlide = 0;
+        const track = document.getElementById('track');
+        const maxSlides = 2; 
+        function moveCarousel(direction) {
+            currentSlide += direction;
+            if (currentSlide < 0) currentSlide = 0;
+            if (currentSlide > maxSlides) currentSlide = maxSlides;
+            const cardWidth = document.querySelector('.doc-card').offsetWidth + 30;
+            track.style.transform = `translateX(-${currentSlide * cardWidth}px)`;
+        }
+
+        // Sistema di particelle fluide su Canvas (Juicy Background)
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = Math.random() * 0.4 - 0.2;
+                this.speedY = Math.random() * 0.4 - 0.2;
+                this.alpha = Math.random() * 0.5 + 0.1;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = '#0055ff';
+                ctx.fillStyle = '#00aaff';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        for (let i = 0; i < 50; i++) { particles.push(new Particle()); }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>
